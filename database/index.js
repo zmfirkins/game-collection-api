@@ -1,10 +1,13 @@
-const { Sequelize } = require('sequelize');
-require('dotenv').config();
+const sequelize = require('../index');
+const User = require('./user');
+const Game = require('./game');
+const Review = require('./review');
 
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: process.env.DB_STORAGE || './database/dev.sqlite',
-  logging: false
-});
+// Associations
+User.hasMany(Review, { foreignKey: 'userId', onDelete: 'CASCADE' });
+Review.belongsTo(User, { foreignKey: 'userId' });
 
-module.exports = sequelize;
+Game.hasMany(Review, { foreignKey: 'gameId', onDelete: 'CASCADE' });
+Review.belongsTo(Game, { foreignKey: 'gameId' });
+
+module.exports = { sequelize, User, Game, Review };
