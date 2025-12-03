@@ -1,13 +1,11 @@
-const sequelize = require('../index');
-const User = require('./user');
-const Game = require('./game');
-const Review = require('./review');
+// database/index.js
+const { Sequelize } = require('sequelize');
+const path = require('path');
 
-// Associations
-User.hasMany(Review, { foreignKey: 'userId', onDelete: 'CASCADE' });
-Review.belongsTo(User, { foreignKey: 'userId' });
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: path.join(__dirname, 'dev.sqlite'),
+  logging: false,
+});
 
-Game.hasMany(Review, { foreignKey: 'gameId', onDelete: 'CASCADE' });
-Review.belongsTo(Game, { foreignKey: 'gameId' });
-
-module.exports = { sequelize, User, Game, Review };
+module.exports = sequelize;
