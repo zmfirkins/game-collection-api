@@ -1,4 +1,5 @@
-const { sequelize, User, Game, Review } = require('../models');
+const path = require('path');
+const { sequelize, User, Game, Review } = require(path.join(__dirname, '../models'));
 
 async function seed() {
   try {
