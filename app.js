@@ -1,4 +1,5 @@
 // app.js
+const authRoutes = require("./routes/authRoutes");
 const express = require('express');
 const { sequelize, User, Game, Review } = require('./database/models');
 
@@ -18,7 +19,7 @@ app.use((req, res, next) => {
 // ------------------------
 // Users Routes
 // ------------------------
-
+app.use("/auth", authRoutes);
 // GET all users
 app.get('/users', async (req, res, next) => {
   try {
