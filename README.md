@@ -25,25 +25,19 @@ This project demonstrates core backend development skills including CRUD operati
    cd game-collection-api
 Install dependencies:
 
-bash
-Copy code
+
 npm install
 Create a .env file if required for configuration.
 
 Seed the database with sample data:
 
-bash
-Copy code
+
 npm run seed
 Start the server:
 
-bash
-Copy code
 node app.js
 Access the API at:
 
-arduino
-Copy code
 http://localhost:3000
 Database
 This API uses SQLite with Sequelize ORM.
@@ -96,9 +90,6 @@ GET /users
 Retrieve all users.
 Response:
 
-json
-Copy code
-[
   { "id": 1, "username": "charlie", "email": "charlie@example.com" }
 ]
 GET /users/:id
@@ -108,16 +99,13 @@ POST /users
 Create a new user.
 Body Parameters:
 
-json
-Copy code
 {
   "username": "zoie",
   "email": "zoie@example.com"
 }
 Response:
 
-json
-Copy code
+
 { "id": 2, "username": "zoie", "email": "zoie@example.com" }
 PUT /users/:id
 Update user information.
@@ -139,8 +127,6 @@ POST /games
 Create a new game.
 Body Parameters:
 
-json
-Copy code
 {
   "title": "Zelda: Breath of the Wild",
   "platform": "Switch",
@@ -168,8 +154,6 @@ POST /reviews
 Create a new review.
 Body Parameters:
 
-json
-Copy code
 {
   "rating": 5,
   "comment": "Amazing game!",
