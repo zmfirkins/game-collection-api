@@ -139,9 +139,9 @@ Deployment
 
 Your API can be deployed on Render or similar platforms. Configure environment variables for JWT secrets and database URL. Ensure your production database is persistent (PostgreSQL recommended).
 
-Deployed API URL: 
+Deployed API URL: https://game-collection-api-uqzn.onrender.com
 
 Postman Collection
 
 The Postman collection includes all endpoints with example requests and authentication headers.
-Link: PUT_YOUR_POSTMAN_COLLECTION_LINK_HERE
+Link: https://www.postman.com/zmfirkins-2802803/workspace/zoie-s-workspace/collection/49866931-ed84d51a-33a5-48b0-accf-dcfcfef05e07?action=share&source=copy-link&creator=49866931
