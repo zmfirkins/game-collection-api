@@ -1,25 +1,30 @@
 // app.js
-const authRoutes = require("./routes/authRoutes");
+require('dotenv').config();
 const express = require('express');
 const { sequelize, User, Game, Review } = require('./database/models');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // ------------------------
 // Middleware
 // ------------------------
 app.use(express.json());
 
+// Simple logger
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
 });
 
 // ------------------------
-// Users Routes
+// Auth Routes
 // ------------------------
 app.use("/auth", authRoutes);
+
+// ------------------------
+// Users Routes
+// ------------------------
 // GET all users
 app.get('/users', async (req, res, next) => {
   try {
@@ -78,7 +83,6 @@ app.delete('/users/:id', async (req, res, next) => {
 // ------------------------
 // Games Routes
 // ------------------------
-
 // GET all games
 app.get('/games', async (req, res, next) => {
   try {
@@ -135,9 +139,8 @@ app.delete('/games/:id', async (req, res, next) => {
 });
 
 // ------------------------
-// Reviews Routes with validation
+// Reviews Routes
 // ------------------------
-
 // GET all reviews
 app.get('/reviews', async (req, res, next) => {
   try {
@@ -159,7 +162,7 @@ app.get('/reviews/:id', async (req, res, next) => {
   }
 });
 
-// POST new review with foreign key check
+// POST new review
 app.post('/reviews', async (req, res, next) => {
   try {
     const { userId, gameId, rating, comment } = req.body;
@@ -184,7 +187,6 @@ app.put('/reviews/:id', async (req, res, next) => {
     const review = await Review.findByPk(req.params.id);
     if (!review) return res.status(404).json({ error: 'Review not found' });
 
-    // Optional: Validate userId and gameId if being updated
     if (req.body.userId) {
       const user = await User.findByPk(req.body.userId);
       if (!user) return res.status(400).json({ error: 'Invalid userId' });
@@ -235,15 +237,4 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message });
 });
 
-// ------------------------
-// Start Server
-// ------------------------
-app.listen(PORT, async () => {
-  console.log(`Server running on port ${PORT}`);
-  try {
-    await sequelize.authenticate();
-    console.log('Database connected!');
-  } catch (err) {
-    console.error('Database connection failed:', err);
-  }
-});
+module.exports = app;
