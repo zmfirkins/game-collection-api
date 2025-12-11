@@ -21,9 +21,9 @@
     "sqlite3": "^5.1.6"
   },
   "devDependencies": {
-    "jest": "^29.6.1",
+    "jest": "^29.7.0",
     "nodemon": "^2.0.22",
     "sequelize-cli": "^6.6.0",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.4"
   }
 }

@@ -1,7 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
 const { User } = require("../database/models");
 
 const router = express.Router();
@@ -20,12 +19,7 @@ router.post("/register", async (req, res) => {
       role: role || "user"
     });
 
-    res.status(201).json({
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      role: user.role
-    });
+    res.status(201).json(user);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -37,15 +31,14 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ where: { email } });
+    if (!user) return res.status(401).json({ error: "Invalid email or password" });
 
-    if (!user) return res.status(401).json({ error: "Invalid email" });
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ error: "Invalid password" });
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) return res.status(401).json({ error: "Invalid email or password" });
 
     const token = jwt.sign(
       { id: user.id, role: user.role },
-      process.env.JWT_SECRET,  
+      process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 

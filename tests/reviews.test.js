@@ -1,30 +1,44 @@
-const request = require('supertest');
-const app = require('../app');
-const { sequelize, User, Game } = require('../database/models');
+describe("Reviews API", () => {
+  let token;
+  let gameId;
 
-beforeAll(async () => {
-  await sequelize.sync({ force: true });
-  await User.create({ username: 'tester', email: 'tester@example.com' });
-  await Game.create({ title: 'G', platform: 'PC' });
-});
-
-afterAll(async () => {
-  await sequelize.close();
-});
-
-test('POST /reviews creates a review', async () => {
-  const users = await User.findAll();
-  const games = await Game.findAll();
-
-  const res = await request(app)
-    .post('/reviews')
-    .send({
-      userId: users[0].id,
-      gameId: games[0].id,
-      rating: 8,
-      comment: 'Nice'
+  beforeAll(async () => {
+    // login as existing user
+    const loginRes = await request(app).post("/auth/login").send({
+      email: "player1@example.com",
+      password: "password123"
     });
+    token = loginRes.body.token;
 
-  expect(res.statusCode).toBe(201);
-  expect(res.body.rating).toBe(8);
-});
+    // create a game to review
+    const gameRes = await request(app)
+      .post("/games")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        title: "Mario",
+        genre: "Platformer",
+        platform: "Switch"
+      });
+
+    gameId = gameRes.body.id;
+  });
+
+  test("POST /reviews - create a review", async () => {
+    const res = await request(app)
+      .post("/reviews")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        userId: 1,
+        gameId: gameId,
+        rating: 5,
+        comment: "Amazing game!"
+      });
+
+    expect(res.statusCode).toBe(201);
+    expect(res.body.comment).toBe("Amazing game!");
+  });
+
+  test("GET /reviews - get all reviews", async () => {
+    const res = await request(app)
+      .get("/reviews")
+      .set("Au
