@@ -229,6 +229,11 @@ app.get('/stats', async (req, res, next) => {
   }
 });
 
+
+app.get('/', (req, res) => {
+  res.send('Game Collection API is running! Visit /users, /games, or /reviews.');
+});
+
 // ------------------------
 // Error Handler
 // ------------------------
