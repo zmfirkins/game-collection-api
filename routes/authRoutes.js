@@ -1,11 +1,12 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 const { User } = require("../database/models");
 
 const router = express.Router();
 
-// ✅ REGISTER
+// REGISTER
 router.post("/register", async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
@@ -19,13 +20,18 @@ router.post("/register", async (req, res) => {
       role: role || "user"
     });
 
-    res.status(201).json(user);
+    res.status(201).json({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role
+    });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 });
 
-// ✅ LOGIN
+// LOGIN
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -39,7 +45,7 @@ router.post("/login", async (req, res) => {
 
     const token = jwt.sign(
       { id: user.id, role: user.role },
-      "SECRET_KEY",
+      process.env.JWT_SECRET,  
       { expiresIn: "1h" }
     );
 

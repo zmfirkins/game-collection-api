@@ -1,175 +1,147 @@
- Game Collection API
+Game Collection API
 
-A RESTful API for managing users, games, and reviews in a game collection application.  
-This project demonstrates core backend development skills including CRUD operations, Sequelize models with relationships, basic error handling, and sample data seeding.
+A RESTful API to manage a collection of video games, users, and reviews. Built with Node.js, Express, Sequelize, and SQLite (development) or PostgreSQL (production). Includes JWT authentication, role-based authorization, and full CRUD functionality.
 
----
+Table of Contents
 
-## Table of Contents
+Features
 
-- [Setup](#setup)  
-- [Database](#database)  
-- [Endpoints](#endpoints)  
-  - [Users](#users)  
-  - [Games](#games)  
-  - [Reviews](#reviews)  
-- [Postman API Documentation](#postman-api-documentation)  
+Setup Instructions
 
----
+Database Models
 
-## Setup
+Authentication & Authorization
 
-1. Clone the repository:
-   ```bash
-   git clone <your-repo-link>
-   cd game-collection-api
+API Endpoints
+
+Testing
+
+Deployment
+
+Postman Collection
+
+Features
+
+User registration and login with JWT authentication
+
+Role-based access: user and admin
+
+CRUD operations for Users, Games, and Reviews
+
+Relational database with Sequelize ORM
+
+Input validation and error handling
+
+Unit tests for core functionality
+
+Setup Instructions
+
+Clone the repository:
+
+git clone https://github.com/zmfirkins/game-collection-api.git
+cd game-collection-api
+
+
 Install dependencies:
 
-
 npm install
-Create a .env file if required for configuration.
-
-Seed the database with sample data:
 
 
-npm run seed
+Create a .env file in the root directory:
+
+JWT_SECRET=your_jwt_secret
+NODE_ENV=development
+
+
+Run database setup and seed:
+
+node database/seeders/seed.js
+
+
 Start the server:
 
 node app.js
-Access the API at:
 
-http://localhost:3000
-Database
-This API uses SQLite with Sequelize ORM.
 
-Models and Relationships:
+The API should now be running at http://localhost:3000 (or your configured port).
 
+Database Models
 User
-
-id (PK)
-
-username (string, required)
-
-email (string, required, unique)
-
+Field	Type	Description
+id	INT	Primary key
+username	STRING	Required, unique
+email	STRING	Required, unique
+password	STRING	Required (hashed)
+role	STRING	user (default) / admin
 Game
-
-id (PK)
-
-title (string, required)
-
-platform (string, required)
-
-genre (string)
-
-releaseDate (date)
-
+Field	Type	Description
+id	INT	Primary key
+title	STRING	Required
+genre	STRING	Optional
+releaseYear	INT	Optional
 Review
+Field	Type	Description
+id	INT	Primary key
+userId	INT	Foreign key (User)
+gameId	INT	Foreign key (Game)
+rating	INT	Required (1-5)
+comment	STRING	Optional
+Authentication & Authorization
 
-id (PK)
+Register: POST /auth/register
 
-rating (integer, required)
+Login: POST /auth/login
 
-comment (string)
+JWT token must be included in the Authorization header for protected routes:
 
-userId (FK → User.id)
+Authorization: Bearer <token>
 
-gameId (FK → Game.id)
 
-Relationships:
+Roles:
 
-One User can write many Reviews.
+user: Can manage own reviews
 
-One Game can have many Reviews.
+admin: Can manage all users, games, and reviews
 
-Reviews belong to a single User and a single Game.
-
-Endpoints
+API Endpoints
 Users
-GET /users
-Retrieve all users.
-Response:
-
-  { "id": 1, "username": "charlie", "email": "charlie@example.com" }
-]
-GET /users/:id
-Retrieve a single user by ID.
-
-POST /users
-Create a new user.
-Body Parameters:
-
-{
-  "username": "zoie",
-  "email": "zoie@example.com"
-}
-Response:
-
-
-{ "id": 2, "username": "zoie", "email": "zoie@example.com" }
-PUT /users/:id
-Update user information.
-Body Parameters: same as POST
-Response: updated user object
-
-DELETE /users/:id
-Delete a user.
-Response: confirmation message
-
+Method	URL	Auth	Description
+GET	/users	Admin	List all users
+GET	/users/:id	Admin	Get user by ID
+POST	/users	Admin	Create a new user
+PUT	/users/:id	Admin	Update user info
+DELETE	/users/:id	Admin	Delete user
 Games
-GET /games
-Retrieve all games.
-
-GET /games/:id
-Retrieve a single game by ID.
-
-POST /games
-Create a new game.
-Body Parameters:
-
-{
-  "title": "Zelda: Breath of the Wild",
-  "platform": "Switch",
-  "genre": "Adventure",
-  "releaseDate": "2017-03-03"
-}
-Response: created game object
-
-PUT /games/:id
-Update game information.
-Body Parameters: same as POST
-
-DELETE /games/:id
-Delete a game.
-Response: confirmation message
-
+Method	URL	Auth	Description
+GET	/games	Optional	List all games
+GET	/games/:id	Optional	Get game by ID
+POST	/games	Admin	Add a new game
+PUT	/games/:id	Admin	Update game info
+DELETE	/games/:id	Admin	Delete game
 Reviews
-GET /reviews
-Retrieve all reviews.
+Method	URL	Auth	Description
+GET	/reviews	Any	List all reviews
+GET	/reviews/:id	Any	Get review by ID
+POST	/reviews	User	Create a review (must be owner)
+PUT	/reviews/:id	User	Update review (must be owner)
+DELETE	/reviews/:id	User	Delete review (must be owner)
+Testing
 
-GET /reviews/:id
-Retrieve a single review by ID.
+Run unit tests:
 
-POST /reviews
-Create a new review.
-Body Parameters:
+npm test
 
-{
-  "rating": 5,
-  "comment": "Amazing game!",
-  "userId": 1,
-  "gameId": 1
-}
-Response: created review object
+Tests cover user registration, login, and CRUD operations for all models.
 
-PUT /reviews/:id
-Update a review.
-Body Parameters: same as POST
+Edge cases for invalid inputs and authorization are included.
 
-DELETE /reviews/:id
-Delete a review.
-Response: confirmation message
+Deployment
 
-Postman API Documentation
-You can view and test all endpoints with example requests/responses here:
-https://www.postman.com/zmfirkins-2802803/zoie-s-workspace/collection/90311r9/game-collection-api?action=share&creator=49866931
+Your API can be deployed on Render or similar platforms. Configure environment variables for JWT secrets and database URL. Ensure your production database is persistent (PostgreSQL recommended).
+
+Deployed API URL: 
+
+Postman Collection
+
+The Postman collection includes all endpoints with example requests and authentication headers.
+Link: PUT_YOUR_POSTMAN_COLLECTION_LINK_HERE
